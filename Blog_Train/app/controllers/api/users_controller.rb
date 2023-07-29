@@ -8,12 +8,15 @@ class Api::UsersController < ApplicationController
 
   def create
     user = User.new(user_params)
+  
     if user.save
       render json: { message: 'Đăng ký thành công' }
     else
       render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
     end
   end
+  
+  
 
   def show
     user = User.find(params[:id])
@@ -40,20 +43,18 @@ class Api::UsersController < ApplicationController
   def login
     user = User.find_by(username: params[:username])
 
-    if user.nil?
-      render json: { message: 'Tài khoản không tồn tại' }, status: :unauthorized
-    elsif user.authenticate(params[:password])
-      session[:user_id] = user.id
-      render json: { message: 'Đăng nhập thành công', user_id: user.id }
+    if user.nil? || !user.authenticate(params[:password])
+      render json: { message: 'Tài khoản hoặc mật khẩu không đúng' }, status: :unauthorized
     else
-      render json: { message: 'Mật khẩu không đúng' }, status: :unauthorized
+      token = JwtHandler.encode({ user_id: user.id })
+      render json: { message: 'Đăng nhập thành công', role: user.role, token: token }
     end
   end
 
   private
-
+  
   def user_params
-  params.require(:user).permit(:username, :email, :password, :phone)
+    params.require(:user).permit(:username, :email, :password, :password_confirmation, :phone, :role)
   end
  
 end

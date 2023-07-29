@@ -4,5 +4,4 @@ Rails.application.routes.draw do
     post '/login', to: 'users#login'
     resources :posts, only: [:create, :index, :destroy]
   end
-  
 end

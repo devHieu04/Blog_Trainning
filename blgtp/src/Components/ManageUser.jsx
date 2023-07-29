@@ -1,6 +1,7 @@
 import  { useState, useEffect } from 'react';
 import axios from 'axios';
 
+
 function ManageUsers() {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -8,6 +9,7 @@ function ManageUsers() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
+  const [role, setRole] = useState('');
 
   useEffect(() => {
     fetchUsers();
@@ -24,13 +26,16 @@ function ManageUsers() {
 
   const addUser = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/api/users', { user: { username, email, password, phone } });
+      const response = await axios.post('http://localhost:3000/api/users', {
+        user: { username, email, password, phone, role },
+      });
       console.log(response.data);
       fetchUsers();
       setUsername('');
       setEmail('');
       setPassword('');
       setPhone('');
+      setRole('');
     } catch (error) {
       console.error(error);
     }
@@ -38,7 +43,10 @@ function ManageUsers() {
 
   const editUser = async (userId, userData) => {
     try {
-      const response = await axios.patch(`http://localhost:3000/api/users/${userId}`, { user: userData });
+      const response = await axios.patch(
+        `http://localhost:3000/api/users/${userId}`,
+        { user: userData }
+      );
       console.log(response.data);
       fetchUsers();
       setSelectedUser(null);
@@ -46,6 +54,7 @@ function ManageUsers() {
       setEmail('');
       setPassword('');
       setPhone('');
+      setRole('');
     } catch (error) {
       console.error(error);
     }
@@ -53,7 +62,9 @@ function ManageUsers() {
 
   const deleteUser = async (userId) => {
     try {
-      const response = await axios.delete(`http://localhost:3000/api/users/${userId}`);
+      const response = await axios.delete(
+        `http://localhost:3000/api/users/${userId}`
+      );
       console.log(response.data);
       fetchUsers();
       setSelectedUser(null);
@@ -61,6 +72,7 @@ function ManageUsers() {
       setEmail('');
       setPassword('');
       setPhone('');
+      setRole('');
     } catch (error) {
       console.error(error);
     }
@@ -70,8 +82,8 @@ function ManageUsers() {
     setSelectedUser(user);
     setUsername(user.username);
     setEmail(user.email);
-    setPassword(user.password);
     setPhone(user.phone);
+    setRole(user.role);
   };
 
   return (
@@ -106,17 +118,35 @@ function ManageUsers() {
           onChange={(e) => setPhone(e.target.value)}
           className="border border-gray-300 rounded-md px-2 py-1 mr-2"
         />
+        <input
+          type="text"
+          placeholder="Role"
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          className="border border-gray-300 rounded-md px-2 py-1 mr-2"
+        />
         {selectedUser ? (
           <>
-            <button onClick={() => editUser(selectedUser.id, { username, email, password, phone })} className="bg-blue-500 text-white px-4 py-1 rounded-md">
+            <button
+              onClick={() =>
+                editUser(selectedUser.id, { username, email, phone, role })
+              }
+              className="bg-blue-500 text-white px-4 py-1 rounded-md"
+            >
               Update User
             </button>
-            <button onClick={() => deleteUser(selectedUser.id)} className="bg-red-500 text-white px-4 py-1 rounded-md ml-2">
+            <button
+              onClick={() => deleteUser(selectedUser.id)}
+              className="bg-red-500 text-white px-4 py-1 rounded-md ml-2"
+            >
               Delete User
             </button>
           </>
         ) : (
-          <button onClick={addUser} className="bg-blue-500 text-white px-4 py-1 rounded-md">
+          <button
+            onClick={addUser}
+            className="bg-blue-500 text-white px-4 py-1 rounded-md"
+          >
             Add User
           </button>
         )}
@@ -127,7 +157,7 @@ function ManageUsers() {
             <th className="px-4 py-2">Username</th>
             <th className="px-4 py-2">Email</th>
             <th className="px-4 py-2">Phone</th>
-            <th className="px-4 py-2">Actions</th>
+            <th className="px-4 py-2">Role</th>
           </tr>
         </thead>
         <tbody>
@@ -136,14 +166,7 @@ function ManageUsers() {
               <td className="border px-4 py-2">{user.username}</td>
               <td className="border px-4 py-2">{user.email}</td>
               <td className="border px-4 py-2">{user.phone}</td>
-              <td className="border px-4 py-2">
-                <button className="bg-yellow-500 text-white px-2 py-1 rounded-md mr-2">
-                  Edit
-                </button>
-                <button className="bg-red-500 text-white px-2 py-1 rounded-md">
-                  Delete
-                </button>
-              </td>
+              <td className="border px-4 py-2">{user.role}</td>
             </tr>
           ))}
         </tbody>

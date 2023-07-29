@@ -20,11 +20,17 @@ const LoginForm = () => {
     event.preventDefault();
 
     try {
-      await axios.post('http://localhost:3000/api/users/login', {
+      const response = await axios.post('http://localhost:3000/api/login', {
         username,
-        password
+        password,
       });
-      navigate('/post'); // Chuyển hướng đến trang post
+
+      const { role } = response.data;
+      if (role === 'Admin') {
+        navigate('/manage'); // Chuyển hướng đến trang quản lý (admin)
+      } else if (role === 'User') {
+        navigate('/listpost'); // Chuyển hướng đến trang danh sách bài viết (user)
+      }
     } catch (error) {
       console.log(error.response.data);
     }
