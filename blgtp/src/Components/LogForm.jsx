@@ -9,6 +9,7 @@ const LoginForm = () => {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+
     if (name === 'username') {
       setUsername(value);
     } else if (name === 'password') {
@@ -21,15 +22,23 @@ const LoginForm = () => {
 
     try {
       const response = await axios.post('http://localhost:3000/api/login', {
-        username,
-        password,
+        user: {
+          username,
+          password,
+        },
       });
 
-      const { role } = response.data;
+      const { role, token, user_id } = response.data;
+
+      // Lưu token và thông tin người dùng vào Local Storage
+      localStorage.setItem('token', token);
+      localStorage.setItem('role', role);
+      localStorage.setItem('user_id', user_id);
+
       if (role === 'Admin') {
         navigate('/manage'); // Chuyển hướng đến trang quản lý (admin)
       } else if (role === 'User') {
-        navigate('/listpost'); // Chuyển hướng đến trang danh sách bài viết (user)
+        navigate('/comment'); // Chuyển hướng đến trang danh sách bài viết (user)
       }
     } catch (error) {
       console.log(error.response.data);

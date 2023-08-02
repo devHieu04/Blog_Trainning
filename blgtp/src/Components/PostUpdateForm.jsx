@@ -1,12 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
-const PostForm = () => {
+const PostUpdateForm = ({ postId }) => {
   const [title, setTitle] = useState('');
   const [banner, setBanner] = useState(null);
   const [introduction, setIntroduction] = useState('');
   const [content, setContent] = useState('');
-  const [bannerUrl, setBannerUrl] = useState('');
+
+  useEffect(() => {
+    fetchPost();
+  }, [postId]);
+
+  const fetchPost = () => {
+    axios
+      .get(`http://localhost:3000/api/posts/${postId}`)
+      .then((response) => {
+        const post = response.data;
+        setTitle(post.title);
+        setIntroduction(post.introduction);
+        setContent(post.content);
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
+  };
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
@@ -26,32 +44,30 @@ const PostForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('banner', banner);
     formData.append('introduction', introduction);
     formData.append('content', content);
-  
+
     try {
-      const response = await axios.post('http://localhost:3000/api/posts', formData, {
+      const response = await axios.put(`http://localhost:3000/api/posts/${postId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      const bannerUrl = 'http://localhost:3000'+response.data.bannerUrl;
-      setBannerUrl(bannerUrl); // Đây là phần lấy đường dẫn ảnh từ backend và đặt vào state
-      console.log(bannerUrl);
-      window.location.reload(); // In ra đường dẫn ảnh trong console
+      console.log('Updated post:', response.data);
+      // Thực hiện các hành động sau khi cập nhật thành công (nếu có)
+      window.location.reload();
     } catch (error) {
       console.log(error.response.data);
     }
   };
-  
 
   return (
     <div className="max-w-md mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Đăng bài viết</h2>
+      <h2 className="text-2xl font-bold mb-4">Cập nhật bài viết</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label htmlFor="title" className="block mb-2 font-medium">
@@ -108,17 +124,15 @@ const PostForm = () => {
           type="submit"
           className="w-full bg-blue-500 text-white font-medium py-2 px-4 rounded"
         >
-          Đăng bài
+          Cập nhật
         </button>
       </form>
-      {bannerUrl && (
-        <div className="mt-4">
-          <h3 className="text-lg font-bold">Banner đã tải lên:</h3>
-          <img src={bannerUrl} alt="Banner" className="mt-2" />
-        </div>
-      )}
     </div>
   );
 };
 
-export default PostForm;
+PostUpdateForm.propTypes = {
+  postId: PropTypes.number.isRequired,
+};
+
+export default PostUpdateForm;

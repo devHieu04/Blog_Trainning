@@ -8,6 +8,7 @@ import Manage from './Components/ManageUser'
 import HomeAdmin from './Components/HomeAdmin'
 import PostForm from './Components/PostForm'
 import PostList from './Components/PostList'
+import UserComment from './Components/PostDetail'
 import './App.css'
 
 function App() {
@@ -15,13 +16,14 @@ function App() {
     <ChakraProvider>
       <BrowserRouter>
         <Routes>
-          <Route path='/*' element={<Register />} />
-          {/* <Route path='/adminsi' element ={<AdminSignIn/>}/> */}
+          <Route path='/*' element={<SignIn />} />
+          <Route path='/register' element ={<Register/>}/>
           <Route path='/login' element ={<SignIn/>}/>
           <Route path='/homeadmin' element ={<HomeAdmin/>}/>
           <Route path='/post' element ={<PostForm/>}/>
           <Route path='/manage' element ={<Manage/>}/>
           <Route path='/listpost' element ={<PostList/>}/>
+          <Route path='/comment' element ={<UserComment/>}/>
         </Routes>
       </BrowserRouter>
     </ChakraProvider>
