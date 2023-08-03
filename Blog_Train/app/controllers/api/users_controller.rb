@@ -47,6 +47,16 @@ class Api::UsersController < ApplicationController
     end
   end
 
+  def logout
+    if @current_user
+      # Xoá biến @current_user (phiên đăng nhập)
+      @current_user = nil
+      render json: { message: 'Đăng xuất thành công' }, status: :ok
+    else
+      render json: { error: 'User not found' }, status: :not_found
+    end
+  end
+  
   def current
     if @current_user
       render json: @current_user, status: :ok
@@ -54,9 +64,9 @@ class Api::UsersController < ApplicationController
       render json: { error: 'User not found' }, status: :not_found
     end
   end
+  
 
   private
-
   def user_params
     params.require(:user).permit(:username, :email, :password, :password_confirmation, :phone, :role)
   end

@@ -1,5 +1,5 @@
 class Api::CommentsController < ApplicationController
-    skip_before_action :verify_authenticity_token, only: [:create, :update, :destroy]
+    skip_before_action :verify_authenticity_token, only: [:create, :update, :destroy, :destroy_all]
     before_action :authenticate_user!, only: [:create, :update, :destroy]
   
     def index
@@ -20,9 +20,9 @@ class Api::CommentsController < ApplicationController
   
     def destroy
         comment = Comment.find(params[:id])
-    
-        # Check if the current user has permission to delete the comment (can only delete their own comments)
-        if comment.user == current_user
+      
+        # Check if the current user has permission to delete the comment (can only delete their own comments or if they are an admin)
+        if comment.user == current_user || current_user&.Admin?
           if comment.destroy
             render json: { message: 'Xoá bình luận thành công' }, status: :ok
           else
@@ -32,6 +32,15 @@ class Api::CommentsController < ApplicationController
           render json: { error: 'Bạn không có quyền xoá bình luận này' }, status: :forbidden
         end
     end
+      
+    def destroy_all
+        post_id = params[:id] # Lấy post_id từ params[:id]
+        Comment.where(post_id: post_id).destroy_all # Xóa tất cả các comments có post_id tương ứng
+        render json: { message: 'All comments deleted successfully' }, status: :ok
+    rescue ActiveRecord::RecordNotFound
+        render json: { error: 'Post not found' }, status: :not_found
+    end
+      
   
     def update
       comment = Comment.find(params[:id])
@@ -55,17 +64,28 @@ class Api::CommentsController < ApplicationController
     end
   
     def authenticate_user!
-      token = request.headers['Authorization']&.split(' ')&.last
-      if token
-        decoded_token = JwtHandler.decode(token)
-        user_id = decoded_token['user_id']
-        @current_user = User.find_by(id: user_id)
-      else
-        render json: { error: 'Unauthorized' }, status: :unauthorized
-      end
-    rescue JWT::DecodeError => e
-      render json: { error: 'Invalid token' }, status: :unauthorized
+        token = request.headers['Authorization']&.split(' ')&.last
+        if token
+          decoded_token = JwtHandler.decode(token)
+          user_id = decoded_token['user_id']
+          @current_user = User.find_by(id: user_id)
+      
+          if @current_user
+            # User is authenticated
+            return
+          else
+            # User ID from the token is not valid
+            render json: { error: 'Invalid user ID from token' }, status: :unauthorized
+          end
+        else
+          # Token is missing
+          render json: { error: 'Unauthorized: Token missing' }, status: :unauthorized
+        end
+      rescue JWT::DecodeError => e
+        # Invalid token
+        render json: { error: 'Invalid token' }, status: :unauthorized
     end
+      
   
     def current_user
       @current_user

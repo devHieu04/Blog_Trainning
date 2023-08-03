@@ -36,7 +36,7 @@ const LoginForm = () => {
       localStorage.setItem('user_id', user_id);
 
       if (role === 'Admin') {
-        navigate('/manage'); // Chuyển hướng đến trang quản lý (admin)
+        navigate('/homeadmin'); // Chuyển hướng đến trang quản lý (admin)
       } else if (role === 'User') {
         navigate('/comment'); // Chuyển hướng đến trang danh sách bài viết (user)
       }

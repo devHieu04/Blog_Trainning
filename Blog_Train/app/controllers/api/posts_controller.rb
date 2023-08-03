@@ -23,6 +23,7 @@ module Api
         head :no_content
       end
 
+      
       def show
         @post = Post.find(params[:id])
         render json: @post, status: :ok

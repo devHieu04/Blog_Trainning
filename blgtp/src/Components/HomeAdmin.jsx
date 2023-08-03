@@ -1,25 +1,15 @@
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-// http://localhost:3000/api/admins/logout
-function HomeAdmin() {
-  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    axios.delete('http://localhost:3000/api/admins/logout')
-      .then(() => {
-        navigate('/login');
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+import bg from '../assets/bg.jpeg' // Tạo file CSS riêng để cấu hình giao diện
+import Header from './Header';
+const Home = () => {
 
   return (
     <div>
-      <h2>Trang chủ admin</h2>
-      <button onClick={handleLogout}>Đăng xuất</button>
+      <h1 className="text-2xl font-bold mb-4 flex items-center justify-center ">Trang chủ Admin </h1>
+      <Header />
+      <img src={bg} alt="" />
     </div>
   );
-}
+};
 
-export default HomeAdmin;
+export default Home;

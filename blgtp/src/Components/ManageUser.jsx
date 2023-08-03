@@ -1,5 +1,6 @@
 import  { useState, useEffect } from 'react';
 import axios from 'axios';
+import Header from './Header';
 
 
 function ManageUsers() {
@@ -88,6 +89,7 @@ function ManageUsers() {
 
   return (
     <div className="container mx-auto p-4">
+      <Header/>
       <h1 className="text-2xl font-bold mb-4">User Management</h1>
       <div className="mb-4">
         <input
