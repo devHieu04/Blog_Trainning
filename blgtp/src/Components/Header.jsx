@@ -12,6 +12,7 @@ const Header = () => {
       await axios.delete('http://localhost:3000/api/logout', { headers });
       localStorage.removeItem('token');
       localStorage.removeItem('user_id');
+      localStorage.removeItem('role');
       window.location.href = '/login';
     } catch (error) {
       console.log(error.response.data);
@@ -34,6 +35,9 @@ const Header = () => {
           </li>
           <li className='bg-green-500 text-white rounded px-4 py-2'>
             <Link to="/listpost">Quản lí bài viết</Link>
+          </li>
+          <li className='bg-green-500 text-white rounded px-4 py-2'>
+            <Link to="/comment">Bài viết đã đăng</Link>
           </li>
         </ul>
         <button onClick={handleLogout} className="logout-btn">

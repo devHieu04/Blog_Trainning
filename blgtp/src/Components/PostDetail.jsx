@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-// import Header from './Header';
+import HeaderAdmin from './Header';
+import HeaderUser from './HeaderUser';
 
 const PostDetail = () => {
   const [posts, setPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
   const [newComment, setNewComment] = useState('');
   const [selectedComment, setSelectedComment] = useState(null);
-//   const [currentUser, setCurrentUser] = useState(null);
+  const [currentUserRole, setCurrentUserRole] = useState(null);
 
   useEffect(() => {
     fetchPosts();
@@ -67,6 +68,10 @@ const PostDetail = () => {
     setNewComment(event.target.value);
   };
 
+  useEffect(() => {
+    const role = localStorage.getItem('role');
+    setCurrentUserRole(role);
+  }, []);
   const handleCommentSubmit = () => {
   const token = localStorage.getItem('token');
   const headers = { Authorization: `Bearer ${token}` };
@@ -162,9 +167,11 @@ const PostDetail = () => {
   };
 
   return (
-    
+    <div>
+    {currentUserRole === 'Admin' ? <HeaderAdmin /> : <HeaderUser /> }
+    {currentUserRole === 'Admin' ? <div>Đang xem ở chế độ admin </div> : <div>Đang xem ở chế độ user </div> }
     <div className="max-w-md mx-auto p-4">
-        {/* <Header/> */}
+       
       {posts.map((post) => (
         <div key={post.id} className="mb-4 p-4 border border-gray-300 rounded">
           <h3 className="text-lg font-bold" onClick={() => handlePostClick(post)}>
@@ -208,6 +215,7 @@ const PostDetail = () => {
           )}
         </div>
       ))}
+    </div>
     </div>
   );
 };

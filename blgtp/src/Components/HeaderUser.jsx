@@ -12,7 +12,9 @@ const Header = () => {
       await axios.delete('http://localhost:3000/api/logout', { headers });
       localStorage.removeItem('token');
       localStorage.removeItem('user_id');
+      localStorage.removeItem('role');
       window.location.href = '/login';
+
     } catch (error) {
       console.log(error.response.data);
     }
@@ -24,13 +26,10 @@ const Header = () => {
       <nav className="menu">
         <ul>
             <li className='bg-green-500 text-white rounded px-4 py-2'>
-                <Link to="/homeadmin">Trang chủ</Link>
+                <Link to="/homeuser">Trang chủ </Link>
             </li>
           <li className='bg-green-500 text-white rounded px-4 py-2'>
-            <Link to="/post">Xem bài viết</Link>
-          </li>
-          <li className='bg-green-500 text-white rounded px-4 py-2'>
-            <Link to="/manage"></Link>
+            <Link to="/comment">Xem bài viết</Link>
           </li>
         </ul>
         <button onClick={handleLogout} className="logout-btn">

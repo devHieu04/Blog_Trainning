@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  // const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const navigate = useNavigate();
 
   const handleInputChange = (event) => {
@@ -34,14 +35,16 @@ const LoginForm = () => {
       localStorage.setItem('token', token);
       localStorage.setItem('role', role);
       localStorage.setItem('user_id', user_id);
-
+      //setIsLoggedIn(true);
+      window.location.reload();
       if (role === 'Admin') {
         navigate('/homeadmin'); // Chuyển hướng đến trang quản lý (admin)
       } else if (role === 'User') {
-        navigate('/comment'); // Chuyển hướng đến trang danh sách bài viết (user)
+        navigate('/homeuser'); // Chuyển hướng đến trang danh sách bài viết (user)
       }
     } catch (error) {
       console.log(error.response.data);
+      // setIsLoggedIn();
     }
   };
 

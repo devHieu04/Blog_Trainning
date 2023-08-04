@@ -114,28 +114,32 @@ const PostList = () => {
               Xoá
             </button>
 
-            {selectedPostId !== null && selectedPostId === post.id && comments.length > 0 && (
+            {selectedPostId !== null && selectedPostId === post.id && (
               <div>
-                <div>
-                  <h4 className="text-lg font-bold mt-4">Bình luận:</h4>
-                  {comments.map((comment) => (
-                    <div key={comment.id} className="border border-gray-300 rounded p-2 mt-2">
-                      <p>{comment.content}</p>
-                      <button
-                        onClick={() => handleDeleteComment(comment.id)}
-                        className="mt-2 bg-red-500 text-white font-medium py-1 px-2 rounded"
-                      >
-                        Xoá
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    onClick={() => handleDeleteAllComments(selectedPostId)}
-                    className="mt-4 bg-red-500 text-white font-medium py-2 px-4 rounded"
-                  >
-                    Xoá tất cả bình luận
-                  </button>
-                </div>
+                {comments.length > 0 ? (
+                  <div>
+                    <h4 className="text-lg font-bold mt-4">Bình luận:</h4>
+                    {comments.map((comment) => (
+                      <div key={comment.id} className="border border-gray-300 rounded p-2 mt-2">
+                        <p>{comment.content}</p>
+                        <button
+                          onClick={() => handleDeleteComment(comment.id)}
+                          className="mt-2 bg-red-500 text-white font-medium py-1 px-2 rounded"
+                        >
+                          Xoá
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      onClick={() => handleDeleteAllComments(selectedPostId)}
+                      className="mt-4 bg-red-500 text-white font-medium py-2 px-4 rounded"
+                    >
+                      Xoá tất cả bình luận
+                    </button>
+                  </div>
+                ) : (
+                  <p className="mt-4">Không có bình luận nào cho bài viết này.</p>
+                )}
                 <PostUpdateForm postId={post.id} onPostUpdate={handlePostUpdate} />
               </div>
             )}
