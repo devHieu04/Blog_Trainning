@@ -33,7 +33,8 @@ gem "jbuilder"
 #gem devise
 gem "devise"
 gem 'pg'
-gem 'react_on_rails', '11.1.4'
+gem 'react_on_rails'
+gem "shakapacker"
 gem 'carrierwave'
 gem 'mini_magick'
 gem 'rack-cors'
