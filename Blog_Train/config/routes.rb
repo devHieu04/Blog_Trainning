@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  get 'hello_world', to: 'hello_world#index'
-  get 'home', to: 'pages#home'
   namespace :api, defaults: { format: :json } do
     resources :users, only: [:index, :create, :show, :update, :destroy]
     post '/login', to: 'users#login'
