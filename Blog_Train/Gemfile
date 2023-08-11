@@ -32,15 +32,18 @@ gem "jbuilder"
 
 #gem devise
 gem "devise"
-gem "pg"
-gem "react_on_rails"
-gem "shakapacker"
-gem "carrierwave"
-gem "mini_magick"
-gem "rack-cors"
-gem "jwt"
-gem "image_processing"
-gem "bcrypt"
+gem 'pg'
+gem 'react_on_rails'
+gem 'carrierwave'
+gem "tailwindcss-rails", "~> 2.0"
+gem 'mini_magick'
+gem 'rack-cors'
+gem 'jwt'
+gem 'image_processing'
+gem 'bcrypt'
+gem 'webpacker'
+
+
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -82,3 +85,5 @@ group :test do
   gem "selenium-webdriver"
   gem "webdrivers"
 end
+
+gem "tailwindcss-rails", "~> 2.0"
