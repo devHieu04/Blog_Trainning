@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 const App = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Name:', name);
