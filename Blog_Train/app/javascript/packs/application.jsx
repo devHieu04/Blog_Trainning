@@ -1,12 +1,6 @@
-import React from "react";
-import '../../assets/stylesheets';
+import ReactOnRails from 'react-on-rails';
+import LoginForm from '../components/LoginForm';
 
-function App () {
-    return ( 
-        <div>
-          helllo 
-        </div>
-     );
-}
-
-export default App ;
+ReactOnRails.register({
+  LoginForm,
+});
