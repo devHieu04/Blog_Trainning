@@ -6,5 +6,17 @@ class PagesController < ApplicationController
     end
     def login
     end 
+    def homeuser
+    end 
+    def homeadmin
+    end
+    def manageuser
+    end
+    def post
+    end
+    def listpost
+    end
+    def comment
+    end 
 end
   

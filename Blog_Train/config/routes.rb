@@ -1,8 +1,14 @@
 Rails.application.routes.draw do
   get 'hello_world', to: 'hello_world#index'
-  root 'pages#index'
+  root 'pages#login'
   get '/register', to: 'pages#register'
+  get '/homeuser', to: 'pages#homeuser'
+  get 'homeadmin', to: 'pages#homeadmin'
   get '/login', to: 'pages#login'
+  get '/manageuser', to: 'pages#manageuser'
+  get 'post', to: 'pages#post'
+  get '/listpost' , to: 'pages#listpost'
+  get '/comment' , to: 'pages#comment'
   namespace :api, defaults: { format: :json } do
     resources :users, only: [:index, :create, :show, :update, :destroy]
     post '/login', to: 'users#login'

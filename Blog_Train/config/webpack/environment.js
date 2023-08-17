@@ -1,8 +1,4 @@
-// config/webpack/environment.js
-
 const { environment } = require('@rails/webpacker');
-
-// Import Tailwind CSS
 const tailwindcss = require('tailwindcss');
 const autoprefixer = require('autoprefixer');
 
@@ -21,6 +17,22 @@ environment.loaders.append('style', {
       },
     },
   ],
+});
+
+// Thêm Babel Loader để xử lý tệp JavaScript và JSX
+const babelLoader = environment.loaders.get('babel');
+if (!babelLoader) {
+  throw new Error('Babel loader not found');
+}
+
+babelLoader.exclude = [/node_modules[\\/]webpacker/];
+
+environment.loaders.prepend('jsx', {
+  test: /\.(js|jsx)$/,
+  use: [
+    { loader: 'babel-loader' }
+  ],
+  include: [/app/],
 });
 
 module.exports = environment;

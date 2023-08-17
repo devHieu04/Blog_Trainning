@@ -37,7 +37,7 @@ const PostDetail = () => {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
-          setCurrentUser(response.data);
+          setCurrentUserRole(response.data.role); // Lấy thông tin vai trò từ phản hồi
         })
         .catch((error) => {
           console.log(error.response.data);
@@ -168,7 +168,7 @@ const PostDetail = () => {
 
   return (
     <div>
-    {currentUserRole === 'Admin' ? <HeaderAdmin /> : <HeaderUser /> }
+    {currentUserRole === 'Admin' ? <HeaderAdmin /> : <HeaderUser />}
     {currentUserRole === 'Admin' ? <div>Đang xem ở chế độ admin </div> : <div>Đang xem ở chế độ user </div> }
     <div className="max-w-md mx-auto p-4">
        

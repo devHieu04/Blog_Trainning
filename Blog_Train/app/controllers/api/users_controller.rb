@@ -42,7 +42,7 @@ class Api::UsersController < ApplicationController
     if user.nil? || !user.authenticate(params[:user][:password])
       render json: { message: 'Tài khoản hoặc mật khẩu không đúng' }, status: :unauthorized
     else
-      token = JwtHandler.encode({ user_id: user.id })
+      token = JwtHandler.encode({ user_id: user.id, role: user.role })
       render json: { message: 'Đăng nhập thành công', user_id: user.id, role: user.role, token: token }
     end
   end
