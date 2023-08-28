@@ -7,16 +7,18 @@ const Header = () => {
   const handleLogout = async () => {
     const token = localStorage.getItem('token');
     const headers = { Authorization: `Bearer ${token}` };
-
-    try {
-      await axios.delete('http://localhost:3000/api/logout', { headers });
-      localStorage.removeItem('token');
+    localStorage.removeItem('token');
       localStorage.removeItem('user_id');
       localStorage.removeItem('role');
       window.location.href = '/login';
-    } catch (error) {
-      console.log(error.response.data);
-    }
+
+    // try {
+    //   await axios.delete('http://localhost:3000/api/logout', { headers });
+      
+     
+    // } catch (error) {
+    //   console.log(error.response.data);
+    // }
   };
 
   return (

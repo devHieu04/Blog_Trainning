@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import  { useState } from 'react';
 import React from 'react'
 import ReactDOM from 'react-dom'
 import axios from 'axios';
@@ -30,11 +30,13 @@ const LoginForm = () => {
 
       const { role, token, user_id } = response.data;
 
+      // Lưu thông tin vào localStorage
       localStorage.setItem('token', token);
       localStorage.setItem('role', role);
       localStorage.setItem('user_id', user_id);
-      
-      // Thay thế useNavigate bằng cách chuyển trang qua window.location.href
+
+      // Chuyển trang sau khi đăng nhập thành công
+      window.location.reload();
       if (role === 'Admin') {
         window.location.href = '/homeadmin';
       } else if (role === 'User') {
@@ -77,7 +79,7 @@ const LoginForm = () => {
         </button>
       </form>
       <p className="mt-3">
-          Chưa có tài khoản ? <a href="/login">Đăng kí</a>
+          Chưa có tài khoản? <a href="/register">Đăng kí</a>
         </p>
     </div>
    

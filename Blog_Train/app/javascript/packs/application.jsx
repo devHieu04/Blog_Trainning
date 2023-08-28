@@ -10,5 +10,5 @@ import PostForm from '../components/PostForm';
 import PostList from '../components/PostList';
 import PostDetail from '../components/PostDetail';
 ReactOnRails.register({
-  LoginForm,Register,HomeUser, App, Header,HomeAdmin, ManageUsers,PostForm, PostList, PostDetail
+  LoginForm,Register,HomeUser, App, Header,HomeAdmin, ManageUsers,PostForm, PostList,PostDetail
 });

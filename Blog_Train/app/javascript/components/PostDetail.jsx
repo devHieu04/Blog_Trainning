@@ -9,6 +9,7 @@ const PostDetail = () => {
   const [newComment, setNewComment] = useState('');
   const [selectedComment, setSelectedComment] = useState(null);
   const [currentUserRole, setCurrentUserRole] = useState(null);
+  const [authenticatedUserId, setAuthenticatedUserId] = useState(null);
 
   useEffect(() => {
     fetchPosts();
@@ -31,18 +32,17 @@ const PostDetail = () => {
 
   const getCurrentUser = () => {
     const token = localStorage.getItem('token');
-    if (token) {
-      axios
-        .get('http://localhost:3000/api/users/current', {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((response) => {
-          setCurrentUserRole(response.data.role);
-        })
-        .catch((error) => {
-          console.log(error.response.data);
-        });
-    }
+    const headers = { Authorization: `Bearer ${token}` };
+
+    axios
+      .get('http://localhost:3000/api/users/current', { headers })
+      .then((response) => {
+        setCurrentUserRole(response.data.role);
+        setAuthenticatedUserId(response.data.id);
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
   };
 
   const handlePostClick = (post) => {
@@ -68,30 +68,32 @@ const PostDetail = () => {
     setNewComment(event.target.value);
   };
 
-  useEffect(() => {
-    const role = localStorage.getItem('role');
-    setCurrentUserRole(role);
-  }, []);
-
   const handleCommentSubmit = () => {
     const token = localStorage.getItem('token');
-    const headers = { Authorization: `Bearer ${token}` };
-
     const userId = localStorage.getItem('user_id');
+    
     if (!userId) {
       window.location.href = '/login';
       return;
     }
-
+  
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json', // Thêm content type để xác định dữ liệu là JSON
+    };
+  
+    const newCommentData = {
+      comment: {
+        content: newComment,
+        post_id: selectedPost.id,
+        user_id: userId, // Thêm user_id vào đối tượng bình luận
+      },
+    };
+  
     axios
       .post(
-        `http://localhost:3000/api/comments`,
-        {
-          comment: {
-            content: newComment,
-            post_id: selectedPost.id,
-          },
-        },
+        'http://localhost:3000/api/comments',
+        newCommentData,
         { headers }
       )
       .then((response) => {
@@ -103,6 +105,7 @@ const PostDetail = () => {
         console.log(error.response.data);
       });
   };
+  
 
   const handleCommentSelect = (comment) => {
     setSelectedComment(comment);
@@ -140,10 +143,9 @@ const PostDetail = () => {
   const handleDeleteClick = (comment) => {
     const token = localStorage.getItem('token');
     const headers = { Authorization: `Bearer ${token}` };
-    const currentUserId = localStorage.getItem('user_id');
 
-    if (comment.user.id !== parseInt(currentUserId)) {
-      alert('Không phải bình luận của bạn! ID của bạn là: ' + currentUserId);
+    if (comment.user.id !== authenticatedUserId) {
+      alert('Không phải bình luận của bạn! ID của bạn là: ' + authenticatedUserId);
     } else {
       axios
         .delete(`http://localhost:3000/api/comments/${comment.id}`, {
@@ -166,100 +168,85 @@ const PostDetail = () => {
   return (
     <div>
       {currentUserRole === 'Admin' ? <HeaderAdmin /> : <HeaderUser />}
-      {currentUserRole === 'Admin' ? (
-        <div>Đang xem ở chế độ admin</div>
-      ) : (
-        <div>Đang xem ở chế độ user</div>
-      )}
-      <div className="container mt-4">
-        {posts.map((post) => (
-          <div
-            key={post.id}
-            className="mb-4 p-4 border border-gray-300 rounded"
-          >
-            <h3
-              className="text-lg font-bold cursor-pointer"
-              onClick={() => handlePostClick(post)}
-            >
-              {post.title}
-            </h3>
-            <p className="text-gray-600">{post.introduction}</p>
-            {post.banner && (
-              <img
-                src={'http://localhost:3000' + post.banner.url}
-                alt="Banner"
-                className="mt-4 img-fluid"
-              />
-            )}
-            {selectedPost?.id === post.id && (
-              <>
-                <p className="mt-4">{post.content}</p>
+      <div className="container py-4">
+        {currentUserRole === 'Admin' ? (
+          <div>Đang xem ở chế độ admin</div>
+        ) : (
+          <div>Đang xem ở chế độ user</div>
+        )}
+        <div className="max-w-md mx-auto p-4">
+          {posts.map((post) => (
+            <div key={post.id} className="mb-4 p-4 border border-gray-300 rounded">
+              <h3 className="text-lg font-bold" onClick={() => handlePostClick(post)}>
+                {post.title}
+              </h3>
+              <p className="text-gray-600">{post.introduction}</p>
+              {post.banner && (
+                <img src={'http://localhost:3000' + post.banner.url} alt="Banner" className="mt-4 img-fluid" />
+              )}
+              <p className="mt-4">{post.content}</p>
+              {selectedPost && selectedPost.id === post.id && (
                 <div>
-                  <h3>Bình luận:</h3>
-                  {selectedPost.comments ? (
-                    selectedPost.comments.map((comment) => (
-                      <div
-                        key={comment.id}
-                        onClick={() => handleCommentSelect(comment)}
-                        className="mb-3 border-bottom cursor-pointer"
-                      >
-                        <p>
-                          {comment.user.username}: {comment.content}
-                        </p>
-                        {selectedComment?.id === comment.id && (
-                          <div>
-                            <textarea
-                              value={selectedComment.content}
-                              onChange={(e) =>
-                                setSelectedComment({
-                                  ...selectedComment,
-                                  content: e.target.value,
-                                })
-                              }
-                              className="form-control mb-2"
-                            />
-                            <button
-                              onClick={() =>
-                                handleCommentEdit(comment.id, selectedComment.content)
-                              }
-                              className="btn btn-success me-2"
-                            >
-                              Lưu
-                            </button>
-                            <button
-                              onClick={() => handleDeleteClick(comment)}
-                              className="btn btn-danger"
-                            >
-                              Xoá
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    ))
-                  ) : (
-                    <p>Không có bình luận</p>
-                  )}
+                  <div>
+                    <h3>Bình luận:</h3>
+                    {selectedPost.comments ? (
+                      selectedPost.comments.map((comment) => (
+                        <div
+                          key={comment.id}
+                          onClick={() => handleCommentSelect(comment)}
+                          className="mb-3 border-bottom cursor-pointer"
+                        >
+                          <p>
+                            {comment.user.username}: {comment.content}
+                          </p>
+                          {selectedComment && selectedComment.id === comment.id && (
+                            <div>
+                              <textarea
+                                value={selectedComment.content}
+                                onChange={(e) =>
+                                  setSelectedComment({
+                                    ...selectedComment,
+                                    content: e.target.value,
+                                  })
+                                }
+                                className="form-control mb-2"
+                              />
+                              <button
+                                onClick={() => handleCommentEdit(comment.id, selectedComment.content)}
+                                className="btn btn-success me-2"
+                              >
+                                Lưu
+                              </button>
+                              <button onClick={() => handleDeleteClick(comment)} className="btn btn-danger">
+                                Xoá
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <p>Không có bình luận</p>
+                    )}
+                  </div>
+                  <div className="mt-3">
+                    <textarea
+                      value={newComment}
+                      onChange={handleCommentChange}
+                      className="form-control mb-2"
+                    />
+                    <button onClick={handleCommentSubmit} className="btn btn-primary">
+                      Gửi bình luận
+                    </button>
+                  </div>
                 </div>
-                <div className="mt-3">
-                  <textarea
-                    value={newComment}
-                    onChange={handleCommentChange}
-                    className="form-control mb-2"
-                  />
-                  <button
-                    onClick={handleCommentSubmit}
-                    className="btn btn-primary"
-                  >
-                    Gửi bình luận
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        ))}
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 };
 
 export default PostDetail;
+

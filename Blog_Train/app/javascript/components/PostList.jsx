@@ -95,7 +95,7 @@ const PostList = () => {
     <div>
       <Header />
       <div className="container mx-auto p-4">
-        <h2 className="text-2xl font-bold mb-4 text-center">Danh sách bài viết</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center">Quản lí bài viết </h2>
         {posts.map((post) => (
           <div key={post.id} className="mb-4 p-4 border border-gray-300 rounded">
             <h3 className="text-lg font-bold cursor-pointer" onClick={() => handlePostClick(post.id)}>

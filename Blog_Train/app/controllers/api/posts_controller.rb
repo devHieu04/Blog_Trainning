@@ -1,7 +1,7 @@
 module Api
     class PostsController < ApplicationController
       skip_before_action :verify_authenticity_token
-      before_action :verify_admin_role, only: [:create, :update, :destroy]
+      # before_action :verify_admin_role, only: [:create, :update, :destroy]
   
       def create
         @post = Post.new(post_params)
