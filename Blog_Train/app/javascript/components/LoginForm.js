@@ -19,7 +19,7 @@ const LoginForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     try {
       const response = await axios.post('http://localhost:3000/api/login', {
         user: {
@@ -27,16 +27,15 @@ const LoginForm = () => {
           password,
         },
       });
-
+  
       const { role, token, user_id } = response.data;
-
+  
       // Lưu thông tin vào localStorage
       localStorage.setItem('token', token);
       localStorage.setItem('role', role);
       localStorage.setItem('user_id', user_id);
-
+  
       // Chuyển trang sau khi đăng nhập thành công
-      window.location.reload();
       if (role === 'Admin') {
         window.location.href = '/homeadmin';
       } else if (role === 'User') {
@@ -46,6 +45,7 @@ const LoginForm = () => {
       console.log(error.response.data);
     }
   };
+  
 
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100 ">

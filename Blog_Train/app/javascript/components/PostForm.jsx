@@ -34,6 +34,10 @@ const PostForm = () => {
     formData.append('introduction', introduction);
     formData.append('content', content);
   
+    // Lấy user_id từ localStorage
+    const userId = localStorage.getItem('user_id');
+    formData.append('user_id', userId);
+  
     try {
       const response = await axios.post('http://localhost:3000/api/posts', formData, {
         headers: {
@@ -43,7 +47,7 @@ const PostForm = () => {
       const bannerUrl = 'http://localhost:3000' + response.data.bannerUrl;
       setBannerUrl(bannerUrl);
       console.log(bannerUrl);
-      window.location.reload();
+      //window.location.reload();
     } catch (error) {
       console.log(error.response.data);
     }

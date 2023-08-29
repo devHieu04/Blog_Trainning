@@ -55,11 +55,6 @@ const Header = () => {
                 Quản lí bài viết
               </a>
             </li>
-            <li className="nav-item">
-              <a className="nav-link text-white" href="/comment">
-                Bài viết đã đăng
-              </a>
-            </li>
           </ul>
         </div>
         <button onClick={handleLogout} className="btn btn-light">

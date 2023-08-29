@@ -33,7 +33,7 @@ const PostDetail = () => {
   const getCurrentUser = () => {
     const token = localStorage.getItem('token');
     const headers = { Authorization: `Bearer ${token}` };
-
+  
     axios
       .get('http://localhost:3000/api/users/current', { headers })
       .then((response) => {
@@ -44,6 +44,7 @@ const PostDetail = () => {
         console.log(error.response.data);
       });
   };
+  
 
   const handlePostClick = (post) => {
     setSelectedPost(post);
@@ -113,8 +114,9 @@ const PostDetail = () => {
 
   const handleCommentEdit = (commentId, newContent) => {
     const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('user_id'); // Get user_id from localStorage
     const headers = { Authorization: `Bearer ${token}` };
-
+  
     axios
       .put(
         `http://localhost:3000/api/comments/${commentId}`,
@@ -122,6 +124,7 @@ const PostDetail = () => {
           comment: {
             content: newContent,
           },
+          user_id: userId, // Send user_id to the backend
         },
         { headers }
       )
@@ -139,31 +142,33 @@ const PostDetail = () => {
         console.log(error.response.data);
       });
   };
+  
 
   const handleDeleteClick = (comment) => {
     const token = localStorage.getItem('token');
-    const headers = { Authorization: `Bearer ${token}` };
-
-    if (comment.user.id !== authenticatedUserId) {
-      alert('Không phải bình luận của bạn! ID của bạn là: ' + authenticatedUserId);
-    } else {
-      axios
-        .delete(`http://localhost:3000/api/comments/${comment.id}`, {
-          headers,
-        })
-        .then((response) => {
-          console.log(response.data);
-          setSelectedPost((prevPost) => ({
-            ...prevPost,
-            comments: prevPost.comments.filter((c) => c.id !== comment.id),
-          }));
-          setSelectedComment(null);
-        })
-        .catch((error) => {
-          console.log(error.response.data);
-        });
-    }
+    const userId = parseInt(localStorage.getItem('user_id'));
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+  
+    axios
+      .delete(`http://localhost:3000/api/comments/${comment.id}`, {
+        headers,
+        data: { user_id: userId }, // Gửi user_id kèm theo request DELETE
+      })
+      .then((response) => {
+        console.log(response.data);
+        setSelectedPost((prevPost) => ({
+          ...prevPost,
+          comments: prevPost.comments.filter((c) => c.id !== comment.id),
+        }));
+        setSelectedComment(null);
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
   };
+  
 
   return (
     <div>

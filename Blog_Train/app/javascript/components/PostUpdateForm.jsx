@@ -50,6 +50,8 @@ const PostUpdateForm = ({ postId }) => {
     formData.append('banner', banner);
     formData.append('introduction', introduction);
     formData.append('content', content);
+    const userId = localStorage.getItem('user_id');
+    formData.append('user_id', userId);
 
     try {
       const response = await axios.put(`http://localhost:3000/api/posts/${postId}`, formData, {

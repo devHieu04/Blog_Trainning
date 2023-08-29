@@ -4,14 +4,26 @@ module Api
       # before_action :verify_admin_role, only: [:create, :update, :destroy]
   
       def create
-        @post = Post.new(post_params)
-  
-        if @post.save
-          render json: { bannerUrl: @post.banner.url }, status: :created
+        # Lấy user_id từ dữ liệu gửi từ phía frontend
+        user_id = params[:user_id].to_i
+      
+        # Tìm người dùng với user_id được cung cấp
+        user = User.find_by(id: user_id)
+      
+        # Kiểm tra xem người dùng có phải là admin không
+        if user && user.Admin?
+          @post = Post.new(post_params)
+        
+          if @post.save
+            render json: { bannerUrl: @post.banner.url }, status: :created
+          else
+            render json: { error: 'Không thể tạo bài viết' }, status: :unprocessable_entity
+          end
         else
-          render json: { error: 'Failed to create post' }, status: :unprocessable_entity
+          render json: { error: 'Không có quyền truy cập. Chỉ admin mới có thể tạo bài viết.' }, status: :forbidden
         end
       end
+      
   
       def index
         @posts = Post.all
@@ -19,10 +31,24 @@ module Api
       end
   
       def destroy
+        # Lấy user_id từ dữ liệu yêu cầu gửi từ phía frontend
+        user_id = params[:user_id].to_i
+      
+        # Tìm người dùng với user_id được cung cấp
+        user = User.find_by(id: user_id)
+      
+        # Tìm bài viết cần xoá
         @post = Post.find(params[:id])
-        @post.destroy
-        head :no_content
+      
+        # Kiểm tra xem người dùng có phải là admin hoặc là người tạo bài viết không
+        if user && user.Admin?
+          @post.destroy
+          head :no_content
+        else
+          render json: { error: 'Không có quyền truy cập. Chỉ admin hoặc người tạo bài viết mới có thể xoá.' }, status: :forbidden
+        end
       end
+      
 
       
       def show
@@ -31,14 +57,26 @@ module Api
       end
 
       def update
-        @post = Post.find(params[:id])
-        
-        if @post.update(post_params)
-          render json: { bannerUrl: @post.banner.url }, status: :ok
+        # Lấy user_id từ dữ liệu yêu cầu gửi từ phía frontend
+        user_id = params[:user_id].to_i
+      
+        # Tìm người dùng với user_id được cung cấp
+        user = User.find_by(id: user_id)
+      
+        # Kiểm tra xem người dùng có phải là Admin không
+        if user && user.Admin?
+          @post = Post.find(params[:id])
+      
+          if @post.update(post_params)
+            render json: { bannerUrl: @post.banner.url }, status: :ok
+          else
+            render json: { error: 'Không thể cập nhật bài viết' }, status: :unprocessable_entity
+          end
         else
-          render json: { error: 'Failed to update post' }, status: :unprocessable_entity
+          render json: { error: 'Không có quyền truy cập. Chỉ Admin mới có thể cập nhật.' }, status: :forbidden
         end
       end
+      
   
       def show_comments
         post = Post.find(params[:id])
@@ -53,10 +91,22 @@ module Api
       end
       def verify_admin_role
         if @current_user && @current_user.role == 'Admin'
-          # Người dùng có vai trò là Admin, cho phép thực hiện hành động
         else
           render json: { error: 'Permission denied' }, status: :forbidden
         end
+      end
+      def authenticate_user!
+        token = request.headers['Authorization']&.split(' ')&.last
+        if token
+          decoded_token = JwtHandler.decode(token)
+          user_id = decoded_token['user_id']
+          @current_user = User.find_by(id: user_id)
+          @current_user = nil if @current_user.nil?
+        else
+          @current_user = nil
+        end
+      rescue JWT::DecodeError => e
+        @current_user = nil
       end
     end
 end

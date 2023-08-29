@@ -42,8 +42,15 @@ const PostList = () => {
   };
 
   const handleDeletePost = (postId) => {
+    // Lấy user_id từ localStorage
+    const userId = localStorage.getItem('user_id');
+  
     axios
-      .delete(`http://localhost:3000/api/posts/${postId}`)
+      .delete(`http://localhost:3000/api/posts/${postId}`, {
+        data: {
+          user_id: userId,
+        },
+      })
       .then((response) => {
         console.log(response.data);
         setSelectedPostId(null);
@@ -53,6 +60,7 @@ const PostList = () => {
         console.log(error.response.data);
       });
   };
+  
 
   const handleDeleteComment = (commentId) => {
     axios
