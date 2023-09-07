@@ -22,19 +22,29 @@ class Api::UsersController < ApplicationController
   end
 
   def update
-    user = User.find(params[:id])
-    if user.update(user_params)
-      render json: { message: 'Cập nhật thành công' }
+    if @current_user && @current_user.Admin?
+      user = User.find(params[:id])
+  
+      if user.update(user_params)
+        render json: { message: 'Cập nhật thành công' }
+      else
+        render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+      end
     else
-      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+      render json: { error: 'Không có quyền truy cập. Chỉ Admin mới có thể cập nhật.' }, status: :forbidden
     end
   end
-
+  
   def destroy
-    user = User.find(params[:id])
-    user.destroy
-    render json: { message: 'Xoá thành công' }
+    if @current_user && @current_user.Admin?
+      user = User.find(params[:id])
+      user.destroy
+      render json: { message: 'Xoá thành công' }
+    else
+      render json: { error: 'Không có quyền truy cập. Chỉ Admin mới có thể xoá.' }, status: :forbidden
+    end
   end
+  
 
   def login
     user = User.find_by(username: params[:user][:username])
@@ -54,13 +64,16 @@ class Api::UsersController < ApplicationController
 
   def logout
     if @current_user
-      # Xoá biến @current_user (phiên đăng nhập)
+      # Xoá người dùng hiện tại khỏi session
+      session.delete(:user_id)
+      session.delete(:user_role)
       @current_user = nil
       render json: { message: 'Đăng xuất thành công' }, status: :ok
     else
       render json: { error: 'User not found' }, status: :not_found
     end
   end
+  
   
   def current
     if session[:user_id].present? && session[:user_role].present?

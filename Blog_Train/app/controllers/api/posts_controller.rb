@@ -4,16 +4,9 @@ module Api
       # before_action :verify_admin_role, only: [:create, :update, :destroy]
   
       def create
-        # Lấy user_id từ dữ liệu gửi từ phía frontend
-        user_id = params[:user_id].to_i
-      
-        # Tìm người dùng với user_id được cung cấp
-        user = User.find_by(id: user_id)
-      
-        # Kiểm tra xem người dùng có phải là admin không
-        if user && user.Admin?
+        if @current_user && @current_user.Admin?
           @post = Post.new(post_params)
-        
+      
           if @post.save
             render json: { bannerUrl: @post.banner.url }, status: :created
           else
@@ -31,17 +24,9 @@ module Api
       end
   
       def destroy
-        # Lấy user_id từ dữ liệu yêu cầu gửi từ phía frontend
-        user_id = params[:user_id].to_i
-      
-        # Tìm người dùng với user_id được cung cấp
-        user = User.find_by(id: user_id)
-      
-        # Tìm bài viết cần xoá
         @post = Post.find(params[:id])
       
-        # Kiểm tra xem người dùng có phải là admin hoặc là người tạo bài viết không
-        if user && user.Admin?
+        if @current_user && (@current_user.Admin? || @current_user.id == @post.user_id)
           @post.destroy
           head :no_content
         else
@@ -57,14 +42,7 @@ module Api
       end
 
       def update
-        # Lấy user_id từ dữ liệu yêu cầu gửi từ phía frontend
-        user_id = params[:user_id].to_i
-      
-        # Tìm người dùng với user_id được cung cấp
-        user = User.find_by(id: user_id)
-      
-        # Kiểm tra xem người dùng có phải là Admin không
-        if user && user.Admin?
+        if @current_user && @current_user.Admin?
           @post = Post.find(params[:id])
       
           if @post.update(post_params)

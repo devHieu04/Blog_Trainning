@@ -76,6 +76,9 @@ function ManageUsers() {
       setRole('');
     } catch (error) {
       console.error(error);
+      alert("đăng nhập rồi hẵng xoá user nhớ đăng nhập là admin nhé");
+      window.location.href="/login"
+    
     }
   };
 

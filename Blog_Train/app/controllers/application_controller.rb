@@ -4,17 +4,14 @@ class ApplicationController < ActionController::Base
     before_action :set_current_user
   
     def current_user
-      token = request.headers['Authorization']&.split(' ')&.last
-      if token
-        decoded_token = JwtHandler.decode(token)
-        user_id = decoded_token['user_id']
+      if session[:user_id].present?
+        user_id = session[:user_id]
         user = User.find_by(id: user_id)
         return user if user
       end
       nil
-    rescue JWT::DecodeError => e
-      nil
     end
+    
     
 
   def decode_token(token)
@@ -34,18 +31,11 @@ class ApplicationController < ActionController::Base
   
 
   def set_current_user
-    token = request.headers['Authorization']
-    if token
-      begin
-        decoded = JwtHandler.decode(token)
-        user_id = decoded['user_id'] # Sử dụng 'user_id' thay vì '[:user_id]'
-        @current_user = User.find_by(id: user_id)
-      rescue JWT::DecodeError
-        @current_user = nil
-      end
+    if session[:user_id].present?
+      user_id = session[:user_id]
+      @current_user = User.find_by(id: user_id)
     else
       @current_user = nil
     end
-  end
-  
+  end 
 end

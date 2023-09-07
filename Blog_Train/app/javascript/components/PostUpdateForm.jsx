@@ -64,6 +64,8 @@ const PostUpdateForm = ({ postId }) => {
       window.location.reload();
     } catch (error) {
       console.log(error.response.data);
+      alert("Vui lòng đăng nhập trước khi thực hiện bất cứ quy trình nào ");
+      window.location.href= '/login';
     }
   };
 

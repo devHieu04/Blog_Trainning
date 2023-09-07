@@ -28,12 +28,10 @@ class Api::CommentsController < ApplicationController
   def destroy
     comment = Comment.find(params[:id])
     
-    # Lấy user_id từ request DELETE
-    user_id = params[:user_id].to_i
-    user = User.find_by(id: user_id)
-  
-    # Check if the user_id from the request matches the user_id of the comment
-    if comment.user_id == user_id || user.Admin?
+    # Lấy user_id từ session
+    user_id = session[:user_id].to_i
+    
+    if comment.user_id == user_id || current_user.Admin?
       if comment.destroy
         render json: { message: 'Xoá bình luận thành công' }, status: :ok
       else
@@ -46,19 +44,23 @@ class Api::CommentsController < ApplicationController
   
 
   def destroy_all
-    post_id = params[:id]
-    Comment.where(post_id: post_id).destroy_all
-    render json: { message: 'All comments deleted successfully' }, status: :ok
+    if current_user && current_user.Admin?
+      post_id = params[:id]
+      Comment.where(post_id: post_id).destroy_all
+      render json: { message: 'All comments deleted successfully' }, status: :ok
+    else
+      render json: { error: 'Không có quyền truy cập. Chỉ Admin mới có thể xoá tất cả các bình luận.' }, status: :forbidden
+    end
   rescue ActiveRecord::RecordNotFound
-    render json: { error: 'Post not found' }, status: :not_found
+    render json: { error: 'Bài viết không tồn tại' }, status: :not_found
   end
+  
 
   def update
     comment = Comment.find(params[:id])
-  
-    # Get user_id from the request parameters
-    user_id = params[:user_id].to_i
-  
+    
+    # Lấy user_id từ session
+    user_id = session[:user_id].to_i
     
     if comment.user_id == user_id
       if comment.update(comment_params)
@@ -83,17 +85,14 @@ class Api::CommentsController < ApplicationController
   end
 
   def authenticate_user!
-    token = request.headers['Authorization']&.split(' ')&.last
-    if token
-      decoded_token = JwtHandler.decode(token)
-      user_id = decoded_token['user_id']
+    if session[:user_id].present? && session[:user_role].present?
+      user_id = session[:user_id]
+      user_role = session[:user_role]
       @current_user = User.find_by(id: user_id)
       @current_user = nil if @current_user.nil?
     else
       @current_user = nil
     end
-     rescue JWT::DecodeError => e
-    @current_user = nil
   end
   def comment_with_user(comment)
     {

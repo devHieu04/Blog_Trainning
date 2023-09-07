@@ -58,6 +58,8 @@ const PostList = () => {
       })
       .catch((error) => {
         console.log(error.response.data);
+        alert("đăng nhập vào rồi làm gì thì làm ");
+        window.location.href= '/login';
       });
   };
   
@@ -85,6 +87,7 @@ const PostList = () => {
         })
         .catch((error) => {
           console.log(error.response.data);
+          window.location.href= '/login';
         });
     }
   };
