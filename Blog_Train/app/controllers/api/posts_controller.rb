@@ -96,17 +96,14 @@ module Api
         end
       end
       def authenticate_user!
-        token = request.headers['Authorization']&.split(' ')&.last
-        if token
-          decoded_token = JwtHandler.decode(token)
-          user_id = decoded_token['user_id']
+        if session[:user_id].present? && session[:user_role].present?
+          user_id = session[:user_id]
+          user_role = session[:user_role]
           @current_user = User.find_by(id: user_id)
           @current_user = nil if @current_user.nil?
         else
           @current_user = nil
         end
-      rescue JWT::DecodeError => e
-        @current_user = nil
       end
     end
 end

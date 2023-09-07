@@ -42,10 +42,15 @@ class Api::UsersController < ApplicationController
     if user.nil? || !user.authenticate(params[:user][:password])
       render json: { message: 'Tài khoản hoặc mật khẩu không đúng' }, status: :unauthorized
     else
-      token = JwtHandler.encode({ user_id: user.id, role: user.role })
-      render json: { message: 'Đăng nhập thành công', user_id: user.id, role: user.role, token: token }
+      # Lưu user_id và role vào session
+      session[:user_id] = user.id
+      session[:user_role] = user.role
+  
+      render json: { message: 'Đăng nhập thành công', user_id: user.id, role: user.role }
     end
   end
+  
+
 
   def logout
     if @current_user
@@ -58,12 +63,15 @@ class Api::UsersController < ApplicationController
   end
   
   def current
-    if @current_user
-      render json: @current_user, status: :ok
+    if session[:user_id].present? && session[:user_role].present?
+      user_id = session[:user_id]
+      user_role = session[:user_role]
+      render json: { user_id: user_id, role: user_role }, status: :ok
     else
-      render json: { error: 'User not found' }, status: :not_found
+      render json: { error: 'User not found in session' }, status: :not_found
     end
   end
+  
   
 
   private
@@ -72,18 +80,16 @@ class Api::UsersController < ApplicationController
   end
 
   def authenticate_user!
-    token = request.headers['Authorization']&.split(' ')&.last
-    if token
-      decoded_token = JwtHandler.decode(token)
-      user_id = decoded_token['user_id']
+    if session[:user_id].present? && session[:user_role].present?
+      user_id = session[:user_id]
+      user_role = session[:user_role]
       @current_user = User.find_by(id: user_id)
       @current_user = nil if @current_user.nil?
     else
       @current_user = nil
     end
-  rescue JWT::DecodeError => e
-    @current_user = nil
   end
+  
   
   
 end
