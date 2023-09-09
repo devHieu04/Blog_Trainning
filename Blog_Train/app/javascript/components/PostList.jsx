@@ -42,15 +42,8 @@ const PostList = () => {
   };
 
   const handleDeletePost = (postId) => {
-    // Lấy user_id từ localStorage
-    const userId = localStorage.getItem('user_id');
-  
     axios
-      .delete(`http://localhost:3000/api/posts/${postId}`, {
-        data: {
-          user_id: userId,
-        },
-      })
+      .delete(`http://localhost:3000/api/posts/${postId}`)
       .then((response) => {
         console.log(response.data);
         setSelectedPostId(null);
@@ -58,10 +51,10 @@ const PostList = () => {
       })
       .catch((error) => {
         console.log(error.response.data);
-        alert("đăng nhập vào rồi làm gì thì làm ");
-        window.location.href= '/login';
+        // Xử lý lỗi nếu cần
       });
   };
+  
   
 
   const handleDeleteComment = (commentId) => {

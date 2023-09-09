@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+ 
   get 'hello_world', to: 'hello_world#index'
   root 'pages#login'
   get '/register', to: 'pages#register'
@@ -9,6 +10,9 @@ Rails.application.routes.draw do
   get 'post', to: 'pages#post'
   get '/listpost' , to: 'pages#listpost'
   get '/comment' , to: 'pages#comment'
+  devise_for :users, controllers: {
+    sessions: 'users/sessions'
+  }
   namespace :api, defaults: { format: :json } do
     resources :users, only: [:index, :create, :show, :update, :destroy]
     post '/login', to: 'users#login'

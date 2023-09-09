@@ -50,8 +50,8 @@ const PostForm = () => {
       //window.location.reload();
     } catch (error) {
       console.log(error.response.data);
-      alert(' Vui lòng đăng nhập.');
-      window.location.href= '/login';
+      // alert(' Vui lòng đăng nhập.');
+      // window.location.href= '/login';
     }
   };
   

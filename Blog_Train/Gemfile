@@ -31,7 +31,8 @@ gem "jbuilder"
 # gem "redis", "~> 4.0"
 
 #gem devise
-gem "devise"
+# Gemfile
+gem 'devise'
 gem 'pg'
 gem 'react_on_rails'
 gem 'carrierwave'

@@ -1,4 +1,5 @@
 class Api::CommentsController < ApplicationController
+  include Devise::Controllers::Helpers
   skip_before_action :verify_authenticity_token, only: [:create, :update, :destroy, :destroy_all]
   before_action :authenticate_user!, only: [:update, :destroy]
 
@@ -8,30 +9,18 @@ class Api::CommentsController < ApplicationController
   end
 
   def create
-    # Lấy user_id từ dữ liệu frontend (params[:comment][:user_id])
-    user_id_from_frontend = params[:comment][:user_id]
-  
     comment = Comment.new(comment_params)
-  
-    # Gán user_id từ frontend vào comment
-    comment.user_id = user_id_from_frontend
-  
     if comment.save
       render json: comment_with_user(comment), status: :created
     else
       render json: { errors: comment.errors.full_messages }, status: :unprocessable_entity
     end
   end
-  
-  
 
   def destroy
     comment = Comment.find(params[:id])
-    
-    # Lấy user_id từ session
-    user_id = session[:user_id].to_i
-    
-    if comment.user_id == user_id || current_user.Admin?
+
+    if comment.user == current_user || current_user.Admin?
       if comment.destroy
         render json: { message: 'Xoá bình luận thành công' }, status: :ok
       else
@@ -41,7 +30,6 @@ class Api::CommentsController < ApplicationController
       render json: { error: "Không thể xoá bình luận của người khác" }, status: :forbidden
     end
   end
-  
 
   def destroy_all
     if current_user && current_user.Admin?
@@ -54,15 +42,11 @@ class Api::CommentsController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     render json: { error: 'Bài viết không tồn tại' }, status: :not_found
   end
-  
 
   def update
     comment = Comment.find(params[:id])
-    
-    # Lấy user_id từ session
-    user_id = session[:user_id].to_i
-    
-    if comment.user_id == user_id
+
+    if comment.user == current_user
       if comment.update(comment_params)
         render json: { message: 'Cập nhật bình luận thành công' }, status: :ok
       else
@@ -72,7 +56,6 @@ class Api::CommentsController < ApplicationController
       render json: { error: 'Bạn không có quyền sửa bình luận này' }, status: :forbidden
     end
   end
-  
 
   private
 
@@ -80,20 +63,6 @@ class Api::CommentsController < ApplicationController
     params.require(:comment).permit(:content, :post_id, :user_id)
   end
 
-  def current_user
-    @current_user
-  end
-
-  def authenticate_user!
-    if session[:user_id].present? && session[:user_role].present?
-      user_id = session[:user_id]
-      user_role = session[:user_role]
-      @current_user = User.find_by(id: user_id)
-      @current_user = nil if @current_user.nil?
-    else
-      @current_user = nil
-    end
-  end
   def comment_with_user(comment)
     {
       id: comment.id,

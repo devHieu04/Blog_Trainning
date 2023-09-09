@@ -61,6 +61,17 @@ function ManageUsers() {
     }
   };
 
+  const searchUsers = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/users?email=${searchEmail}`
+      );
+      setUsers(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const deleteUser = async (userId) => {
     try {
       const response = await axios.delete(
@@ -77,8 +88,8 @@ function ManageUsers() {
     } catch (error) {
       console.error(error);
       alert("đăng nhập rồi hẵng xoá user nhớ đăng nhập là admin nhé");
-      window.location.href="/login"
-    
+      window.location.href = "/login"
+
     }
   };
 

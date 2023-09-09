@@ -62,6 +62,7 @@ const PostDetail = () => {
       })
       .catch((error) => {
         console.log(error.response.data);
+       
       });
   };
 
@@ -87,7 +88,7 @@ const PostDetail = () => {
       comment: {
         content: newComment,
         post_id: selectedPost.id,
-        user_id: userId, // Thêm user_id vào đối tượng bình luận
+        user_id: userId, 
       },
     };
   
