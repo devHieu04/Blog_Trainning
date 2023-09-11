@@ -4,9 +4,11 @@ class Api::UsersController < ApplicationController
   before_action :authenticate_user!, only: [:logout, :update, :destroy]
 
   def index
-    users = User.all
-    render json: users
+    users = User.all.select(:id, :username, :email, :role, :phone)
+    render json: users.to_json, status: :ok
   end
+  
+  
 
   def create
     user = User.new(user_params)
@@ -20,8 +22,14 @@ class Api::UsersController < ApplicationController
 
   def show
     user = User.find(params[:id])
-    render json: user
+    if user
+      render json: user.to_json(only: [:username])
+    else
+      render json: { error: 'User not found' }, status: :not_found
+    end
   end
+  
+  
 
   def update
     if current_user.Admin? # Sử dụng current_user từ Devise

@@ -1,7 +1,7 @@
 class Api::CommentsController < ApplicationController
   include Devise::Controllers::Helpers
-  skip_before_action :verify_authenticity_token, only: [:create, :update, :destroy, :destroy_all]
-  before_action :authenticate_user!, only: [:update, :destroy]
+  skip_before_action :verify_authenticity_token, only: [:create, :update, :destroy, :destroy_all, :get_comments_by_post]
+  before_action :authenticate_user!, only: [:create ,:update, :destroy]
 
   def index
     comments = Comment.all
@@ -10,17 +10,26 @@ class Api::CommentsController < ApplicationController
 
   def create
     comment = Comment.new(comment_params)
+    comment.user_id = current_user.id if user_signed_in?  # Gán user_id nếu người dùng đã đăng nhập
     if comment.save
       render json: comment_with_user(comment), status: :created
     else
       render json: { errors: comment.errors.full_messages }, status: :unprocessable_entity
     end
   end
+  
 
+  def show
+    comment = Comment.find(params[:id])
+    render json: comment, include: :user, status: :ok
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: 'Comment not found' }, status: :not_found
+  end
+  
   def destroy
     comment = Comment.find(params[:id])
-
-    if comment.user == current_user || current_user.Admin?
+  
+    if comment.user_id == current_user.id || current_user.Admin?
       if comment.destroy
         render json: { message: 'Xoá bình luận thành công' }, status: :ok
       else
@@ -30,6 +39,8 @@ class Api::CommentsController < ApplicationController
       render json: { error: "Không thể xoá bình luận của người khác" }, status: :forbidden
     end
   end
+  
+
 
   def destroy_all
     if current_user && current_user.Admin?
@@ -41,6 +52,11 @@ class Api::CommentsController < ApplicationController
     end
   rescue ActiveRecord::RecordNotFound
     render json: { error: 'Bài viết không tồn tại' }, status: :not_found
+  end
+  def get_comments_by_post
+    post_id = params[:post_id]
+    comments = Comment.where(post_id: post_id)
+    render json: comments, include: :user, status: :ok
   end
 
   def update

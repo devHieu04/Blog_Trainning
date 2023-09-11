@@ -48,6 +48,7 @@ const PostList = () => {
         console.log(response.data);
         setSelectedPostId(null);
         fetchPosts();
+        //alert("Success! không có bug nhé");
       })
       .catch((error) => {
         console.log(error.response.data);
@@ -76,7 +77,8 @@ const PostList = () => {
         .then((response) => {
           console.log(response.data);
           setComments([]);
-          fetchComments(postId); // Fetch comments again after deletion
+          fetchComments(postId);
+          alert("Success! không có bug nhé"); // Fetch comments again after deletion
         })
         .catch((error) => {
           console.log(error.response.data);

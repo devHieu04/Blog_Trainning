@@ -23,6 +23,14 @@ Rails.application.routes.draw do
       get 'show_comments', on: :member # Đổi tên route thành 'show_comments'
       delete 'delete_all_comments', on: :member, to: 'comments#destroy_all' # Thêm route để xoá hết comment
     end
-    resources :comments, only: [:create, :index, :destroy, :update]
+    resources :comments, only: [:index, :create, :update, :destroy] do
+      collection do
+        delete :destroy_all
+        get :get_comments_by_post # Thêm route này để lấy tất cả comment của một bài viết
+      end
+      member do
+        get :show # Lấy một comment cụ thể theo id
+      end
+    end
   end
 end

@@ -9,6 +9,7 @@ import ManageUsers from '../components/ManageUser';
 import PostForm from '../components/PostForm';
 import PostList from '../components/PostList';
 import PostDetail from '../components/PostDetail';
+import UserList from '../components/UserList'
 ReactOnRails.register({
-  LoginForm,Register,HomeUser, App, Header,HomeAdmin, ManageUsers,PostForm, PostList,PostDetail
+  LoginForm,Register,HomeUser, App, Header,HomeAdmin, ManageUsers,PostForm, PostList,PostDetail,UserList
 });

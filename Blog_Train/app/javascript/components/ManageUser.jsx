@@ -42,54 +42,49 @@ function ManageUsers() {
     }
   };
 
-  const editUser = async (userId, userData) => {
+  const editUser = async () => {
     try {
-      const response = await axios.patch(
-        `http://localhost:3000/api/users/${userId}`,
-        { user: userData }
-      );
-      console.log(response.data);
-      fetchUsers();
-      setSelectedUser(null);
-      setUsername('');
-      setEmail('');
-      setPassword('');
-      setPhone('');
-      setRole('');
+      if (selectedUser) {
+        const response = await axios.patch(
+          `http://localhost:3000/api/users/${selectedUser.id}`,
+          { user: { username, email, phone, role } }
+        );
+        console.log(response.data);
+        fetchUsers();
+        setSelectedUser(null);
+        setUsername('');
+        setEmail('');
+        setPassword('');
+        setPhone('');
+        setRole('');
+      } else {
+        // Hiển thị thông báo lỗi hoặc xử lý một cách phù hợp
+      }
     } catch (error) {
       console.error(error);
     }
   };
-
-  const searchUsers = async () => {
+  const deleteUser = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:3000/api/users?email=${searchEmail}`
-      );
-      setUsers(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const deleteUser = async (userId) => {
-    try {
-      const response = await axios.delete(
-        `http://localhost:3000/api/users/${userId}`
-      );
-      console.log(response.data);
-      fetchUsers();
-      setSelectedUser(null);
-      setUsername('');
-      setEmail('');
-      setPassword('');
-      setPhone('');
-      setRole('');
+      if (selectedUser) {
+        const response = await axios.delete(
+          `http://localhost:3000/api/users/${selectedUser.id}`
+        );
+        console.log(response.data);
+        fetchUsers();
+        setSelectedUser(null);
+        setUsername('');
+        setEmail('');
+        setPassword('');
+        setPhone('');
+        setRole('');
+      } else {
+        // Hiển thị thông báo lỗi hoặc xử lý một cách phù hợp
+      }
     } catch (error) {
       console.error(error);
       alert("đăng nhập rồi hẵng xoá user nhớ đăng nhập là admin nhé");
       window.location.href = "/login"
-
     }
   };
 

@@ -47,11 +47,11 @@ const PostForm = () => {
       const bannerUrl = 'http://localhost:3000' + response.data.bannerUrl;
       setBannerUrl(bannerUrl);
       console.log(bannerUrl);
-      //window.location.reload();
+      alert("Success! không có bug nhé");
     } catch (error) {
       console.log(error.response.data);
-      // alert(' Vui lòng đăng nhập.');
-      // window.location.href= '/login';
+      alert(' Server lỗi rồi cu ơi :))');
+      //window.location.href= '/login';
     }
   };
   

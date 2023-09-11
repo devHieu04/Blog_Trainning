@@ -45,10 +45,20 @@ module Api
     end
 
     def show_comments
-      post = Post.find(params[:id])
-      comments = post.comments
-      render json: comments, include: :user, status: :ok
+      begin
+        post = Post.find(params[:id])
+        comments = post.comments
+        # puts comments
+        render json: comments.to_json, include: :user, status: :ok
+      rescue ActiveRecord::RecordNotFound => e
+        Rails.logger.error "Record not found: #{e.message}"
+        render json: { error: 'Bài viết không tồn tại' }, status: :not_found
+      rescue => e
+        Rails.logger.error "Error: #{e.message}"
+        render json: { error: 'Có lỗi xảy ra' }, status: :internal_server_error
+      end
     end
+    
 
     private
 
