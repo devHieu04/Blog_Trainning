@@ -5,7 +5,7 @@ class Api::CommentsController < ApplicationController
 
   def index
     comments = Comment.all
-    render json: comments, include: :user, status: :ok
+    render json: comments, status: :ok
   end
 
   def create

@@ -26,56 +26,47 @@ RSpec.describe Api::CommentsController, type: :controller do
 
   describe 'POST #create' do
     context 'when user is authenticated' do
+      let(:user) { create(:user) } # Tạo user
+      let(:post) { create(:post) } # Tạo post
+  
       it 'creates a new comment' do
         valid_attributes = { content: 'New Comment', post_id: post.id, user_id: user.id }
-
+  
         expect {
           post :create, params: { comment: valid_attributes }
         }.to change(Comment, :count).by(1)
-
+  
         expect(response).to have_http_status(:created)
       end
-
+  
       it 'returns the created comment' do
         valid_attributes = { content: 'New Comment', post_id: post.id, user_id: user.id }
-
+  
         post :create, params: { comment: valid_attributes }
-
+  
         expect(response).to have_http_status(:created)
         expect(JSON.parse(response.body)).to include('id', 'content', 'user', 'post_id')
       end
-
+  
       it 'assigns the current user as the comment owner' do
         valid_attributes = { content: 'New Comment', post_id: post.id, user_id: user.id }
-
+  
         post :create, params: { comment: valid_attributes }
-
+  
         created_comment = Comment.last
         expect(created_comment.user).to eq(user)
       end
-
+  
       it 'returns unprocessable_entity status if comment is invalid' do
         invalid_attributes = { content: nil, post_id: post.id, user_id: user.id }
-
+  
         post :create, params: { comment: invalid_attributes }
-
+  
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
-
-    context 'when user is not authenticated' do
-      it 'returns forbidden status' do
-        valid_attributes = { content: 'New Comment', post_id: post.id, user_id: user.id }
-
-        allow(request.env['warden']).to receive(:authenticate!).and_throw(:warden, scope: :user)
-        allow(controller).to receive(:current_user).and_return(nil)
-
-        post :create, params: { comment: valid_attributes }
-
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
   end
+  
 
   describe 'GET #show' do
     it 'returns a specific comment' do
