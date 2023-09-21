@@ -1,5 +1,6 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
+require 'devise'
 require 'factory_bot_rails'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
@@ -63,4 +64,10 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+  config.before(:each, type: :controller) do
+    @request.env['devise.mapping'] = Devise.mappings[:user]
+    user = User.create(username: 'testuser', email: 'user@example.com', phone: '1234567890', role: 'User')
+    sign_in user
+  end
+  config.include Devise::Test::ControllerHelpers, type: :controller
 end

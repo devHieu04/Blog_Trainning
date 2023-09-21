@@ -1,7 +1,7 @@
 # spec/models/post_spec.rb
 
 require 'rails_helper'
-
+# bundle exec rspec spec/models/post_spec.rb
 RSpec.describe Post, type: :model do
   describe 'before_destroy callback' do
     it 'removes the images folder associated with the post' do

@@ -21,7 +21,7 @@ class Api::CommentsController < ApplicationController
 
   def show
     comment = Comment.find(params[:id])
-    render json: comment, include: :user, status: :ok
+    render json: comment.to_json, status: :ok
   rescue ActiveRecord::RecordNotFound
     render json: { error: 'Comment not found' }, status: :not_found
   end

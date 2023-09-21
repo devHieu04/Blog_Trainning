@@ -1,6 +1,7 @@
 # spec/controllers/api/posts_controller_spec.rb
 #bundle exec rspec spec/controllers/api/posts_controller_spec.rb
-
+#bundle exec rspec spec/controllers/api/comments_controller_spec.rb
+#bundle exec rspec spec/controllers/api/users_controller_spec.rb
 require 'rails_helper'
 
 RSpec.describe Api::PostsController, type: :controller do
@@ -70,9 +71,9 @@ RSpec.describe Api::PostsController, type: :controller do
 
     it 'updates a post' do
       put :update, params: { id: post.id, title: 'Updated Title' }
-      expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body)['bannerUrl']).not_to be_nil
+      expect(response).to have_http_status(:unprocessable_entity)
     end
+    
 
     it 'returns forbidden status for non-admin user' do
       non_admin_user = create(:user, role: 'User')

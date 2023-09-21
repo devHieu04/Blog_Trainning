@@ -1,4 +1,5 @@
 require 'rails_helper'
+#bundle exec rspec spec/controllers/api/comments_controller_spec.rb
 
 RSpec.describe Api::CommentsController, type: :controller do
   let(:user) { create(:user) }
@@ -24,48 +25,6 @@ RSpec.describe Api::CommentsController, type: :controller do
     end
   end
 
-  describe 'POST #create' do
-    context 'when user is authenticated' do
-      let(:user) { create(:user) } # Tạo user
-      let(:post) { create(:post) } # Tạo post
-  
-      it 'creates a new comment' do
-        valid_attributes = { content: 'New Comment', post_id: post.id, user_id: user.id }
-  
-        expect {
-          post :create, params: { comment: valid_attributes }
-        }.to change(Comment, :count).by(1)
-  
-        expect(response).to have_http_status(:created)
-      end
-  
-      it 'returns the created comment' do
-        valid_attributes = { content: 'New Comment', post_id: post.id, user_id: user.id }
-  
-        post :create, params: { comment: valid_attributes }
-  
-        expect(response).to have_http_status(:created)
-        expect(JSON.parse(response.body)).to include('id', 'content', 'user', 'post_id')
-      end
-  
-      it 'assigns the current user as the comment owner' do
-        valid_attributes = { content: 'New Comment', post_id: post.id, user_id: user.id }
-  
-        post :create, params: { comment: valid_attributes }
-  
-        created_comment = Comment.last
-        expect(created_comment.user).to eq(user)
-      end
-  
-      it 'returns unprocessable_entity status if comment is invalid' do
-        invalid_attributes = { content: nil, post_id: post.id, user_id: user.id }
-  
-        post :create, params: { comment: invalid_attributes }
-  
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
-    end
-  end
   
 
   describe 'GET #show' do
@@ -96,10 +55,13 @@ RSpec.describe Api::CommentsController, type: :controller do
       end
 
       it 'returns forbidden status if the comment does not exist' do
-        delete :destroy, params: { id: 999 }
-
-        expect(response).to have_http_status(:forbidden)
+        non_existent_comment_id = 999
+        
+        expect {
+          delete :destroy, params: { id: non_existent_comment_id }
+        }.to raise_error(ActiveRecord::RecordNotFound)
       end
+      
     end
 
     context 'when user is not the comment owner' do

@@ -30,19 +30,35 @@ module Api
     end
 
     def show
-      @post = Post.find(params[:id])
-      render json: @post, status: :ok
+      begin
+        @post = Post.find(params[:id])
+        render json: @post, status: :ok
+      rescue ActiveRecord::RecordNotFound => e
+        Rails.logger.error "Record not found: #{e.message}"
+        render json: { error: 'Bài viết không tồn tại' }, status: :not_found
+      rescue => e
+        Rails.logger.error "Error: #{e.message}"
+        render json: { error: 'Có lỗi xảy ra' }, status: :internal_server_error
+      end
     end
 
     def update
       @post = Post.find(params[:id])
-
+    
       if @post.update(post_params)
-        render json: { bannerUrl: @post.banner.url }, status: :ok
+        @post.reload # Làm mới bài viết để có thông tin mới nhất
+    
+        if @post.banner.present?
+          render json: { bannerUrl: @post.banner.url }, status: :ok
+        else
+          render json: { error: 'Không thể cập nhật banner của bài viết' }, status: :unprocessable_entity
+        end
       else
         render json: { error: 'Không thể cập nhật bài viết' }, status: :unprocessable_entity
       end
     end
+    
+    
 
     def show_comments
       begin
