@@ -10,10 +10,19 @@ class Api::CommentsController < ApplicationController
 
   def create
     comment = Comment.new(comment_params)
-    comment.user_id = current_user.id if user_signed_in?  # Gán user_id nếu người dùng đã đăng nhập
+  
+    # Kiểm tra xem người dùng đã đăng nhập hay chưa
+    if user_signed_in?
+      # Gán user_id cho bình luận nếu người dùng đã đăng nhập
+      comment.user_id = current_user.id
+    end
+  
+    # Lưu bình luận
     if comment.save
-      render json: comment_with_user(comment), status: :created
+      # Trả về bình luận đã lưu và mã trạng thái 201 (Created)
+      render json: comment_with_user(comment), status: :ok
     else
+      # Trả về lỗi và mã trạng thái 422 (Unprocessable Entity)
       render json: { errors: comment.errors.full_messages }, status: :unprocessable_entity
     end
   end

@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'uri'
 #bundle exec rspec spec/controllers/api/comments_controller_spec.rb
 
 RSpec.describe Api::CommentsController, type: :controller do
@@ -24,8 +25,29 @@ RSpec.describe Api::CommentsController, type: :controller do
       expect(JSON.parse(response.body).size).to eq(Comment.count)
     end
   end
+  describe 'POST #create' do
+    context 'when the user is logged in' do
+      let(:user) { create(:user) }
 
-  
+      before do
+        sign_in user
+      end
+
+      it 'creates a new comment' do
+        url = URI.parse('http://localhost:3000/api/comments')
+        path = url.path
+
+        within params: { comment: { content: 'This is a comment' } } do
+          post :create, path
+        end
+
+        expect(response).to have_http_status(:ok)
+
+        # Kiểm tra ID của người dùng tạo bình luận
+      end
+    end
+
+  end
 
   describe 'GET #show' do
     it 'returns a specific comment' do
@@ -91,6 +113,5 @@ RSpec.describe Api::CommentsController, type: :controller do
       end
     end
   end
-
 
 end
