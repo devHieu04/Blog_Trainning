@@ -11,7 +11,8 @@ Rails.application.routes.draw do
   get '/listpost' , to: 'pages#listpost'
   get '/comment' , to: 'pages#comment'
   devise_for :users, controllers: {
-    sessions: 'users/sessions'
+    sessions: 'users/sessions',
+    omniauth_callbacks: 'users/omniauth_callbacks'
   }
   namespace :api, defaults: { format: :json } do
     resources :users, only: [:index, :create, :show, :update, :destroy]
