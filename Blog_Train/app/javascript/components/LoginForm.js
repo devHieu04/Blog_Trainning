@@ -41,8 +41,8 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100 ">
-      <div className="card p-4 w-50 min-w-md">
+    <div className="">
+      <div className="card p-4 w-150">
         <h2 className="text-center font-weight-bold mb-4">Đăng nhập</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
