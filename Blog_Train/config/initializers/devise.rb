@@ -66,6 +66,11 @@ Devise.setup do |config|
   config.strip_whitespace_keys = [:email]
   # config.authentication_keys = [:username]
   config.omniauth :google_oauth2, '979158390492-09dobgpnt9f7srcl14g7fq8o27cgnf2a.apps.googleusercontent.com', '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'
+  config.omniauth :facebook_oauth2,
+  '267073009632877',
+  'b8a80017638d863cfda5dd9f66acc916',
+ #  Em config chỗ này
+
   # Tell if authentication through request.params is enabled. True by default.
   # It can be set to an array that will enable params authentication only for the
   # given strategies, for example, `config.params_authenticatable = [:database]` will
