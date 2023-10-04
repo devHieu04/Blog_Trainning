@@ -42,7 +42,7 @@ const LoginForm = () => {
 
   return (
     <div className="">
-      <div className="card p-4 w-150">
+      <div className="card p-4 w-150 min-w-md">
         <h2 className="text-center font-weight-bold mb-4">Đăng nhập</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">

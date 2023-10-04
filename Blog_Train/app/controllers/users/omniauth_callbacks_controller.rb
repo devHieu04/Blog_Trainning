@@ -9,7 +9,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         redirect_to '/homeuser'
       else
         flash[:alert] = t 'devise.omniauth_callbacks.failure', kind: 'Google', reason: "#{auth.info.email} is not authorized."
-        redirect_to '/homeuser'
+        redirect_to new_user_session_path
       end
      end
  
