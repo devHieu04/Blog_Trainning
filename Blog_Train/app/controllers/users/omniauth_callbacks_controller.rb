@@ -12,7 +12,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         redirect_to new_user_session_path
       end
      end
- 
      def from_google_params
        @from_google_params ||= {
          uid: auth.uid,

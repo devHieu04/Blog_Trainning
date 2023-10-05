@@ -101,13 +101,6 @@ const PostDetail = () => {
   const handleCommentSubmit = () => {
     const token = localStorage.getItem('token');
     const headers = { Authorization: `Bearer ${token}` };
-
-    const userId = localStorage.getItem('user_id');
-    if (!userId) {
-      window.location.href = '/login';
-      return;
-    }
-
     axios
       .post(
         `http://localhost:3000/api/comments`,
