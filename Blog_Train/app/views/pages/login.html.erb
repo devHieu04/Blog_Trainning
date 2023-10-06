@@ -8,5 +8,11 @@
     Login with Google
   <% end %>
 </div>
+<div class="mt-4">
+  <%= button_to user_facebook_omniauth_authorize_path, method: :post, data: { turbo: "false" }, class: 'btn btn-primary btn-block d-flex align-items-center' do %>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/600px-Facebook_Logo_%282019%29.png" alt="Facebook Icon" class="mr-3" width="20" height="20">
+    Login with Facebook
+  <% end %>
+</div>
 </div>
 
