@@ -21,7 +21,7 @@ const PostDetail = () => {
     const headers = { Authorization: `Bearer ${token}` };
 
     axios
-      .get('http://localhost:3000/api/posts', { headers })
+      .get('https://localhost:3000/api/posts', { headers })
       .then((response) => {
         setPosts(response.data);
       })
@@ -34,7 +34,7 @@ const PostDetail = () => {
     const token = localStorage.getItem('token');
     if (token) {
       axios
-        .get('http://localhost:3000/api/users/current', {
+        .get('https://localhost:3000/api/users/current', {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
@@ -53,7 +53,7 @@ const PostDetail = () => {
 
   const fetchComments = (postId) => {
     axios
-      .get(`http://localhost:3000/api/posts/${postId}/show_comments`)
+      .get(`https://localhost:3000/api/posts/${postId}/show_comments`)
       .then((response) => {
         const comments = response.data;
         setSelectedPost((prevPost) => ({
@@ -71,7 +71,7 @@ const PostDetail = () => {
         user_ids.forEach((user_id) => {
           if (!users[user_id]) {
             axios
-              .get(`http://localhost:3000/api/users/${user_id}`)
+              .get(`https://localhost:3000/api/users/${user_id}`)
               .then((response) => {
                 setUsers((prevUsers) => ({
                   ...prevUsers,
@@ -103,7 +103,7 @@ const PostDetail = () => {
     const headers = { Authorization: `Bearer ${token}` };
     axios
       .post(
-        `http://localhost:3000/api/comments`,
+        `https://localhost:3000/api/comments`,
         {
           comment: {
             content: newComment,
@@ -132,7 +132,7 @@ const PostDetail = () => {
 
     axios
       .put(
-        `http://localhost:3000/api/comments/${commentId}`,
+        `https://localhost:3000/api/comments/${commentId}`,
         {
           comment: {
             content: newContent,
@@ -169,7 +169,7 @@ const PostDetail = () => {
     const headers = { Authorization: `Bearer ${token}` };
 
     axios
-      .delete(`http://localhost:3000/api/comments/${comment.id}`, {
+      .delete(`https://localhost:3000/api/comments/${comment.id}`, {
         headers,
       })
       .then((response) => {
@@ -201,7 +201,7 @@ const PostDetail = () => {
                 {post.title}
               </h3>
               <p className="text-gray-600">{post.introduction}</p>
-              {post.banner && <img src={'http://localhost:3000' + post.banner.url} alt="Banner" className="mt-4" />}
+              {post.banner && <img src={'https://localhost:3000' + post.banner.url} alt="Banner" className="mt-4" />}
               {selectedPost && selectedPost.id === post.id && (
                 <>
                   <p className="mt-4">{post.content}</p>

@@ -21,7 +21,7 @@ const PostList = () => {
 
   const fetchPosts = () => {
     axios
-      .get('http://localhost:3000/api/posts')
+      .get('https://localhost:3000/api/posts')
       .then((response) => {
         setPosts(response.data);
       })
@@ -32,7 +32,7 @@ const PostList = () => {
 
   const fetchComments = (postId) => {
     axios
-      .get(`http://localhost:3000/api/posts/${postId}/show_comments`)
+      .get(`https://localhost:3000/api/posts/${postId}/show_comments`)
       .then((response) => {
         setComments(response.data);
       })
@@ -43,7 +43,7 @@ const PostList = () => {
 
   const handleDeletePost = (postId) => {
     axios
-      .delete(`http://localhost:3000/api/posts/${postId}`)
+      .delete(`https://localhost:3000/api/posts/${postId}`)
       .then((response) => {
         console.log(response.data);
         setSelectedPostId(null);
@@ -60,7 +60,7 @@ const PostList = () => {
 
   const handleDeleteComment = (commentId) => {
     axios
-      .delete(`http://localhost:3000/api/comments/${commentId}`, { headers })
+      .delete(`https://localhost:3000/api/comments/${commentId}`, { headers })
       .then((response) => {
         console.log(response.data);
         setComments((prevComments) => prevComments.filter((comment) => comment.id !== commentId));
@@ -73,7 +73,7 @@ const PostList = () => {
   const handleDeleteAllComments = (postId) => {
     if (postId) {
       axios
-        .delete(`http://localhost:3000/api/posts/${postId}/delete_all_comments`)
+        .delete(`https://localhost:3000/api/posts/${postId}/delete_all_comments`)
         .then((response) => {
           console.log(response.data);
           setComments([]);

@@ -18,7 +18,7 @@ function ManageUsers() {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/users');
+      const response = await axios.get('https://localhost:3000/api/users');
       setUsers(response.data);
     } catch (error) {
       console.error(error);
@@ -27,7 +27,7 @@ function ManageUsers() {
 
   const addUser = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/api/users', {
+      const response = await axios.post('https://localhost:3000/api/users', {
         user: { username, email, password, phone, role },
       });
       console.log(response.data);
@@ -46,7 +46,7 @@ function ManageUsers() {
     try {
       if (selectedUser) {
         const response = await axios.patch(
-          `http://localhost:3000/api/users/${selectedUser.id}`,
+          `https://localhost:3000/api/users/${selectedUser.id}`,
           { user: { username, email, phone, role } }
         );
         console.log(response.data);
@@ -68,7 +68,7 @@ function ManageUsers() {
     try {
       if (selectedUser) {
         const response = await axios.delete(
-          `http://localhost:3000/api/users/${selectedUser.id}`
+          `https://localhost:3000/api/users/${selectedUser.id}`
         );
         console.log(response.data);
         fetchUsers();

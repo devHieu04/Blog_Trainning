@@ -14,7 +14,7 @@ const PostUpdateForm = ({ postId }) => {
 
   const fetchPost = () => {
     axios
-      .get(`http://localhost:3000/api/posts/${postId}`)
+      .get(`https://localhost:3000/api/posts/${postId}`)
       .then((response) => {
         const post = response.data;
         setTitle(post.title);
@@ -54,7 +54,7 @@ const PostUpdateForm = ({ postId }) => {
     formData.append('user_id', userId);
 
     try {
-      const response = await axios.put(`http://localhost:3000/api/posts/${postId}`, formData, {
+      const response = await axios.put(`https://localhost:3000/api/posts/${postId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

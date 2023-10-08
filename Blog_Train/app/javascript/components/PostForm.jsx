@@ -39,12 +39,12 @@ const PostForm = () => {
     formData.append('user_id', userId);
   
     try {
-      const response = await axios.post('http://localhost:3000/api/posts', formData, {
+      const response = await axios.post('https://localhost:3000/api/posts', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      const bannerUrl = 'http://localhost:3000' + response.data.bannerUrl;
+      const bannerUrl = 'https://localhost:3000' + response.data.bannerUrl;
       setBannerUrl(bannerUrl);
       console.log(bannerUrl);
       alert("Success! không có bug nhé");

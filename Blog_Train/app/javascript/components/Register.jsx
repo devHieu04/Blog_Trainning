@@ -37,7 +37,7 @@ function Register() {
     }
 
     axios
-      .post('http://localhost:3000/api/users', { user: formData })
+      .post('https://localhost:3000/api/users', { user: formData })
       .then((response) => {
         console.log(response.data);
         alert('Đăng ký thành công! Vui lòng đăng nhập.');
