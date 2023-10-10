@@ -1,5 +1,5 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  
+  include Devise::Controllers::Helpers
 
   def facebook
     @user = User.from_omniauth(request.env["omniauth.auth"])
@@ -25,6 +25,16 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       flash[:alert] = t 'devise.omniauth_callbacks.failure', kind: 'Google', reason: "#{auth.info.email} is not authorized."
       redirect_to new_user_session_path
     end
+   end
+   def google_oauth2_logout
+    @user = current_user
+  
+    if @user.present? && @user.provider == 'google_oauth2'
+      @user.update(uid: nil, provider: nil) 
+    end
+  
+    sign_out @user
+    redirect_to root_path, notice: "Logged out from Google"
    end
    def from_google_params
      @from_google_params ||= {

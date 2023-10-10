@@ -20,7 +20,7 @@ const LoginForm = () => {
     event.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:3000/users/sign_in', {
+      const response = await axios.post('https://localhost:3000/users/sign_in', {
         user: {
           email,
           password,

@@ -65,8 +65,8 @@ Devise.setup do |config|
   # modifying a user and when used to authenticate or find a user. Default is :email.
   config.strip_whitespace_keys = [:email]
   # config.authentication_keys = [:username]
-  config.omniauth :google_oauth2, '979158390492-09dobgpnt9f7srcl14g7fq8o27cgnf2a.apps.googleusercontent.com', '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'
-  config.omniauth :facebook, '23878568218456178','699509d15a36d1fc792d170a30c15a95' , { scope: "email" }
+  config.omniauth :google_oauth2, ENV['GOOGLE_OAUTH_ID'], ENV['GOOGLE_OAUTH_SECRET']
+  config.omniauth :facebook, ENV['FACEBOOK_ID'], ENV['FACEBOOK_SECRET'], {scope: "email"}
   # Tell if authentication through request.params is enabled. True by default.
   # It can be set to an array that will enable params authentication only for the
   # given strategies, for example, `config.params_authenticatable = [:database]` will

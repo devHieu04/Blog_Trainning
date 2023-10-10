@@ -9,7 +9,7 @@ const Header = () => {
     const headers = { Authorization: `Bearer ${token}` };
 
     try {
-      await axios.delete('http://localhost:3000/api/logout', { headers });
+      await axios.delete('https://localhost:3000/api/logout', { headers });
       localStorage.removeItem('token');
       localStorage.removeItem('user_id');
       localStorage.removeItem('role');

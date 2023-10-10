@@ -109,7 +109,7 @@ const PostList = () => {
             </h3>
             <p className="text-gray-600">{post.introduction}</p>
             {post.banner && (
-              <img src={'http://localhost:3000' + post.banner.url} alt="Banner" className="mt-4 img-fluid" />
+              <img src={'https://localhost:3000' + post.banner.url} alt="Banner" className="mt-4 img-fluid" />
             )}
             <p className="mt-4">{post.content}</p>
             <button

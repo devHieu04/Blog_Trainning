@@ -14,6 +14,9 @@ Rails.application.routes.draw do
     sessions: 'users/sessions',
     omniauth_callbacks: 'users/omniauth_callbacks'
   }
+  devise_scope :user do
+    get 'logout/google', to: 'users/omniauth_callbacks#google_oauth2_logout'
+  end
   namespace :api, defaults: { format: :json } do
     resources :users, only: [:index, :create, :show, :update, :destroy]
     post '/login', to: 'users#login'

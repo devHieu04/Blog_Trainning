@@ -13,7 +13,8 @@ const Header = () => {
       window.location.href = '/login';
 
     try {
-      await axios.delete('http://localhost:3000/api/logout', { headers });
+      await axios.delete('https://localhost:3000/api/logout', { headers });
+      await axios.delete('https://localhost:3000/logout/google');
       
      
     } catch (error) {
